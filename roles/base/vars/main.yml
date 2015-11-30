@@ -3,3 +3,48 @@
 create_swap_file: no
 swap_file_path: /swapfile
 swap_file_size_kb: 512
+
+common_log_user: syslog
+
+# Set to true to customize DNS search domains
+COMMON_CUSTOM_DHCLIENT_CONFIG: false
+
+# override this var to set a different hostname
+COMMON_HOSTNAME: ""
+
+COMMON_ENVIRONMENT: 'default_env'
+COMMON_DEPLOYMENT: 'default_deployment'
+
+COMMON_MOTD_TEMPLATE: "motd.tail.j2"
+COMMON_SSH_PASSWORD_AUTH: "no"
+
+COMMON_PYPI_MIRROR_URL: 'https://pypi.python.org/simple'
+
+COMMON_AWS_SYNC: False
+COMMON_AWS_SYNC_BUCKET: "virzoom-{{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT }}"
+COMMON_AWS_S3_SYNC_SCRIPT: "{{ COMMON_BIN_DIR }}/send-logs-to-s3"
+
+COMMON_BASE_DIR: /virzoom
+COMMON_DATA_DIR: "{{ COMMON_BASE_DIR}}/var"
+COMMON_APP_DIR: "{{ COMMON_BASE_DIR}}/app"
+COMMON_LOG_DIR: "{{ COMMON_DATA_DIR }}/log"
+# Override this to create
+# common users in all roles
+COMMON_USER_INFO: []
+# these directories contain
+# symlinks for convenience
+COMMON_BIN_DIR: "{{ COMMON_BASE_DIR }}/bin"
+COMMON_CFG_DIR: "{{ COMMON_BASE_DIR }}/etc"
+
+common_directories:
+  - path: "{{ COMMON_DATA_DIR }}"
+  - path: "{{ COMMON_APP_DIR }}"
+  - path: "{{ COMMON_BIN_DIR }}"
+  - path: "{{ COMMON_CFG_DIR }}"
+  - path: "{{ COMMON_LOG_DIR }}"
+    owner: "{{ common_log_user }}"
+    group: "{{ common_log_user }}"
+  - path: "/etc/logrotate.d/hourly"
+  - path: "/etc/rsyslog.d/50-default.conf"
+    state: absent
+
